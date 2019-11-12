@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1573549158737.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "567034086",
+    "id" : "45CD78EC",
+    "lastKnownWriteTime" : 1573549129,
+    "last_content_update" : 1573549129,
+    "path" : "~/SKOLA/LIU/Åk 4/TDDE01/Labs/Lab1/Lab1_Assignment1.R",
+    "project_path" : "Lab1_Assignment1.R",
+    "properties" : {
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

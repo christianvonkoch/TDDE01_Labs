@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1573512041979.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "4A924A97",
+    "lastKnownWriteTime" : 2349569484168,
+    "last_content_update" : 1573512041979,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "id" : "5a5ae8f43ca24c18ac6aac40828787f6",
+        "name" : "spammodel",
+        "title" : "spammodel"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "object_explorer"
+}
