@@ -45,15 +45,17 @@ bayesian_max_theta = bayesian_theta_max(10, Dataframe)
 print(bayesian_max_theta)
 
 #Plot new curve on top of each other
-curve(-bayesian_likelihood(x, 10, Dataframe), from=0, to=20, add=FALSE, col="red", ylim=c(0,100))
-curve(-likelihood(x, Dataframe), from=0, to=20, add=TRUE, col="blue", ylim=c(0,100))
+curve(-bayesian_likelihood(x, 10, Dataframe), from=0, to=10, add=FALSE, col="red", ylim=c(20,300))
+curve(-likelihood(x, Dataframe), from=0, to=10, add=TRUE, col="blue", ylim=c(20,300))
 
 #Generate 50 new observation using theta value from step 2
 set.seed(12345)
 newdata = rexp(50, rate = max_theta)
+print(newdata)
 
 #Plot new data and old data in histogram
 olddata = Dataframe$Length
+print(olddata)
 hist(newdata)
 hist(olddata)
 

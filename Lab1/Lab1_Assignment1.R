@@ -27,9 +27,9 @@ missclass=function(conf_matrix, fit_matrix){
 }
 
 #Calculate missclassification rate for train and test data
-missclass_train = missclass(confusion_matrix_test, test)
+missclass_train = missclass(confusion_matrix_test, train)
 print(missclass_train)
-missclass_test = missclass(confusion_matrix_train, train)
+missclass_test = missclass(confusion_matrix_train, test)
 print(missclass_test)
 
 #Create confusion matrix where classification is based on threshold 0.8
