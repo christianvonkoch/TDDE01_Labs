@@ -16,25 +16,55 @@ set.seed(12345)
 id=sample(1:n, floor(n*0.5))
 train=Dataframe[id,]
 test=Dataframe[-id,]
+moisture_train = train$Moisture
+moisture_test = test$Moisture
 
 #Create function for fitting linear regression models
 fit_moisture_model = function(x) {
   return(lm(formula = Moisture ~ poly(Protein, degree=x), data=train))
 }
 
-#Create function for calculating MSE
-calcMSE = function(fit){
-  return(sum(fit$residuals^2)/length(fit$residuals))
+#Create predict function for training set
+predict_train = function(model){
+  return(predict(model, newdata = train))
 }
 
-#Create models for i = 1..6
-fit1 = fit_moisture_model(1)
-fit2 = fit_moisture_model(2)
-fit3 = fit_moisture_model(3)
-fit4 = fit_moisture_model(4)
-fit5 = fit_moisture_model(5)
-fit6 = fit_moisture_model(6)
+#Create predict function for test set
+predict_test = function(model){
+  return(predict(model, newdata = test))
+}
 
-print(calcMSE(fit1))
+#Create function for calculating MSE, input parameters are vectors containing original data and predicted data
+calcMSE = function(y, yhat){
+  return(sum((y-yhat)^2)/length(y))
+}
+
+#Create models and predictions and store MSE values in a vector for training and test data
+vector_train = c()
+vector_test = c()
+for (i in 1:6){
+  fit = fit_moisture_model(i)
+  predicted_train = predict_train(fit)
+  predicted_test = predict_test(fit)
+  vector_train[i] = calcMSE(moisture_train, predicted_train)
+  vector_test[i] = calcMSE(moisture_test, predicted_test)
+}
+
+#Create numeric vector 1 through 6
+models = c(1:6)
+
+#Plot MSE for each model
+plot(models, vector_train, col="blue", xlab="Model", ylab="MSE")
+par(new=TRUE)
+plot(models, vector_test, col="red", xlab="Model", ylab="MSE")
+
+#Print MSE values
+print(vector_train)
+print(vector_test)
+
+#Assignment 4: Fat response and Channel1-100 are predictors. Use stepAIC. How many variables were selected?
+
+
+
 
 
