@@ -4,6 +4,7 @@ n = length(Dataframe[,1])
 print(Dataframe)
 moisture = Dataframe$Moisture
 protein = Dataframe$Protein
+fat = Dataframe$Fat
 plot(moisture, protein, type="p", ylab="Protein", xlab="Moisture", col="red")
 
 #Conclusion: Looks like a linear relation so a linear regression model is appropriate
@@ -63,6 +64,42 @@ print(vector_train)
 print(vector_test)
 
 #Assignment 4: Fat response and Channel1-100 are predictors. Use stepAIC. How many variables were selected?
+
+#Fetch package stepAIC
+#install.packages("MASS")
+library("MASS")
+
+#Perform stepAIC on fat
+colno_fat = which(colnames(Dataframe)=="Fat")
+channel_values = Dataframe[1:(colno_fat-1)]
+fit_fat = lm(fat~., data = channel_values)
+step = stepAIC(fit_fat, direction="both")
+step$anova
+summary(step)
+
+#Fit a Ridge regression model with same predictor and response variables. Plot model coefficient depend on the log
+# of the penalty factor lambda.
+#install.packages("glmnet")
+library("glmnet")
+covariates = scale(Dataframe[,2:(colno_fat-1)])
+response = scale(Dataframe[,colno_fat])
+ridge_model = glmnet(as.matrix(covariates), response, alpha=0, family="gaussian")
+plot(ridge_model, xvar="lambda", label=TRUE)
+
+#Coefficients goes towards 0 when lambda goes towards infinity
+
+#Repeat last step but with LASSO instead of Ridge. Differences?
+lasso_model = glmnet(as.matrix(covariates), response, alpha=1, family="gaussian")
+plot(lasso_model, xvar="lambda", label=TRUE)
+
+#Choose the best model by cross validation for LASSO model.
+lasso_model_optimal = cv.glmnet(as.matrix(covariates), response, alpha=1, family="gaussian", lambda=seq(0,1,0.001))
+lasso_model_optimal$lambda.min
+plot(lasso_model_optimal)
+coef(lasso_model_optimal, s="lambda.min")
+print(lasso_model_optimal$lambda.min)
+
+
 
 
 
