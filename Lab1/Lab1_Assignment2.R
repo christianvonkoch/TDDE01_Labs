@@ -2,13 +2,13 @@
 Dataframe=read.csv2("machines_csv.csv")
 
 #Compute a function for calculating the maximum likelihood of a function
-likelihood=function(theta, x){
+loglikelihood=function(theta, x){
   n = length(x[,1])
   return(n*log(theta)-theta*sum(x))
 }
 
 #Plot curve for different theta values
-theta_curve = curve(-likelihood(x, Dataframe), from=min(Dataframe), to=max(Dataframe))
+theta_curve = curve(-loglikelihood(x, Dataframe), xlab="Theta", from=min(Dataframe), to=max(Dataframe))
 
 #Find maximum likelihood value of theta
 theta_max = function(x){
@@ -25,8 +25,8 @@ y = matrix(Dataframe[1:6,1], nrow=length(Dataframe[1:6,1]), ncol=1)
 print(y)
 
 #Plot new curve on top of each other
-curve(-likelihood(x, Dataframe), from=0, to=20, add=FALSE, col="red", ylim=c(0,100))
-curve(-likelihood(x, y), from=0, to=20, add=TRUE, col="blue", ylim=c(0,100))
+curve(-loglikelihood(x, Dataframe), xlab="Theta", from=0, to=20, add=FALSE, col="red", ylim=c(0,100))
+curve(-loglikelihood(x, y), xlab="Theta", from=0, to=20, add=TRUE, col="blue", ylim=c(0,100))
 
 #Compute a function for calculating the likelihood of the bayesian function
 bayesian_likelihood=function(theta, lambda, x){
@@ -45,8 +45,8 @@ bayesian_max_theta = bayesian_theta_max(10, Dataframe)
 print(bayesian_max_theta)
 
 #Plot new curve on top of each other
-curve(-bayesian_likelihood(x, 10, Dataframe), from=0, to=10, add=FALSE, col="red", ylim=c(20,300))
-curve(-likelihood(x, Dataframe), from=0, to=10, add=TRUE, col="blue", ylim=c(20,300))
+curve(-bayesian_likelihood(x, 10, Dataframe), ylab="-Loglikelihood", xlab="Theta", from=0, to=10, add=FALSE, col="red", ylim=c(20,300))
+curve(-loglikelihood(x, Dataframe), ylab="-Loglikelihood", xlab="Theta", from=0, to=10, add=TRUE, col="blue", ylim=c(20,300))
 
 #Generate 50 new observation using theta value from step 2
 set.seed(12345)

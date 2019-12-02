@@ -27,9 +27,9 @@ missclass=function(conf_matrix, fit_matrix){
 }
 
 #Calculate missclassification rate for train and test data
-missclass_train = missclass(confusion_matrix_test, train)
+missclass_train = missclass(confusion_matrix_train, train)
 print(missclass_train)
-missclass_test = missclass(confusion_matrix_train, test)
+missclass_test = missclass(confusion_matrix_test, test)
 print(missclass_test)
 
 #Create confusion matrix where classification is based on threshold 0.8
@@ -39,9 +39,9 @@ print(confusion_matrix_train2)
 print(confusion_matrix_test2)
 
 #Calculate missclassification rate for train and test data with threshold 0.8
-missclass_train2 = missclass(confusion_matrix_test2, test)
+missclass_train2 = missclass(confusion_matrix_train2, test)
 print(missclass_train2)
-missclass_test2 = missclass(confusion_matrix_train2, train)
+missclass_test2 = missclass(confusion_matrix_test2, train)
 print(missclass_test2)
 
 #Fetch package kkm
