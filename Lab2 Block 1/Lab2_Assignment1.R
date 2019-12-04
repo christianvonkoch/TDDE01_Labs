@@ -38,7 +38,7 @@ model3 = glm(sex ~ CL+RW, data=Dataframe, family='binomial')
 predicted3 = predict(model3, newdata=Dataframe, type='response')
 sexvector = c()
 for (i in predicted3) {
-  if (i>0.5) {
+  if (i>0.9) {
     sexvector = c(sexvector, 'Male')
   } else {
     sexvector = c(sexvector, 'Female')
@@ -54,7 +54,7 @@ plot(CL, RW, main="Plot predicted values of CL and RW but with logistic regressi
      col=c("red", "blue")[sexvector_factor], xlab="CL", ylab="RW", xlim=c(0,50), ylim=c(0,20))
 
 boundaryline = function(length, coefficientvector) {
-  return(-coefficientvector[1]/coefficientvector[3]-(coefficientvector[2]/coefficientvector[3])*length)
+  return(-coefficientvector[1]/coefficientvector[3]-(coefficientvector[2]/coefficientvector[3])*length+log(9)/coefficientvector[3])
 }
 par(new=TRUE)
 curve(boundaryline(x, model3$coefficients), xlab="CL", ylab="RW", col="green", from=0, to=50, xlim=c(0,50), ylim=c(0,20),
