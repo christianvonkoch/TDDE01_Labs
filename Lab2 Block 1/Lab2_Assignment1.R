@@ -53,11 +53,11 @@ print(misclass3)
 plot(CL, RW, main="Plot predicted values of CL and RW but with logistic regression",
      col=c("red", "blue")[sexvector_factor], xlab="CL", ylab="RW", xlim=c(0,50), ylim=c(0,20))
 
-boundaryline = function(length, coefficientvector) {
-  return(-coefficientvector[1]/coefficientvector[3]-(coefficientvector[2]/coefficientvector[3])*length+log(9)/coefficientvector[3])
+boundaryline = function(length, coefficientvector, prior) {
+  return(-coefficientvector[1]/coefficientvector[3]-(coefficientvector[2]/coefficientvector[3])*length+log(prior/(1-prior))/coefficientvector[3])
 }
 par(new=TRUE)
-curve(boundaryline(x, model3$coefficients), xlab="CL", ylab="RW", col="green", from=0, to=50, xlim=c(0,50), ylim=c(0,20),
+curve(boundaryline(x, model3$coefficients, 0.9), xlab="CL", ylab="RW", col="green", from=0, to=50, xlim=c(0,50), ylim=c(0,20),
       sub="Red = Female, Blue = Male, Green = Boundaryline")
 
 
