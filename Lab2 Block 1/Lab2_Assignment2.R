@@ -88,6 +88,84 @@ predictedNaive_test=compute_naive(fit_naive, test)
 #5: Use optimal tree and Naives Bayes to classify the test data by using principle: classified as 1 if bigger than
 #0.05, 0.1, 0.15, ..., 0.9, 0.95. Compute the TPR and FPR for two models and plot corresponsing ROC curves.
 
+#Writing function for classifying data
+class=function(data, class1, class2, prior){
+  vector=c()
+  for(i in data) {
+    if(i>prior){
+      vector=c(vector,class1)
+    } else {
+      vector=c(vector,class2)
+    }
+  }
+  return(vector)
+}
+
+x_vector=seq(0.05,0.95,0.05)
+tpr_tree=c()
+fpr_tree=c()
+tpr_naive=c()
+fpr_naive=c()
+treeVector=c()
+treeConfusion = c()
+naiveConfusion = c()
+treeClass = c()
+naiveClass = c()
+#Reusing optimal tree found in task 3 but returntype is response instead
+predictTree=data.frame(predict(finalTree, newdata=test, type="vector"))
+predictNaive=data.frame(predict(fit_naive, newdata=test, type="raw"))
+for(prior in x_vector){
+  treeClass = class(predictTree$good, 'good', 'bad', prior)
+  treeConfusion=table(test$good_bad, treeClass)
+  if(ncol(treeConfusion)==1){
+    if(colnames(treeConfusion)=="good"){
+      treeConfusion=cbind(c(0,0), treeConfusion)
+    } else {
+      treeConfusion=cbind(treeConfusion,c(0,0))
+    }
+  }
+  totGood=sum(treeConfusion[2,])
+  totBad=sum(treeConfusion[1,])
+  tpr_tree=c(tpr_tree, treeConfusion[2,2]/totGood)
+  fpr_tree=c(fpr_tree, treeConfusion[1,2]/totBad)
+  naiveClass=class(predictNaive$good, 'good', 'bad', prior)
+  naiveConfusion=table(test$good_bad, naiveClass)
+  if(ncol(naiveConfusion)==1){
+    if(colnames(naiveConfusion)=="good"){
+      naiveConfusion=cbind(c(0,0), naiveConfusion)
+    } else {
+      naiveConfusion=cbind(naiveConfusion,c(0,0))
+    }
+  }
+  totGood=sum(naiveConfusion[2,])
+  totBad=sum(naiveConfusion[1,])
+  tpr_naive=c(tpr_naive, naiveConfusion[2,2]/totGood)
+  fpr_naive=c(fpr_naive, naiveConfusion[1,2]/totBad)
+}
+#Plot the ROC curves
+plot(fpr_naive, tpr_naive, main="ROC curve", sub="Red = Naive Bayes, Blue = Tree", type="b", col="red", xlim=c(0,1), 
+     ylim=c(0,1))
+points(fpr_tree, fpr_naive, type="b", col="blue")
+#Naive has greatest AOC => should choose Naive
+
+#6: Repeate Naive Bayes with loss matrix punishing with factor 10 if predicting good when bad and 1 if predicting
+#bad when good. 
+naiveModel=naiveBayes(good_bad~., data=train)
+train_loss=predict(naiveModel, newdata=train, type="raw")
+test_loss=predict(naiveModel, newdata=test, type="raw")
+confusion_trainLoss=table(train$good_bad, train_loss[,2]/train_loss[,1]>10)
+misclass_trainLoss=misclass(confusion_trainLoss, train)
+print(confusion_trainLoss)
+print(misclass_trainLoss)
+confusion_testLoss=table(test$good_bad, test_loss[,2]/test_loss[,1]>10)
+misclass_testLoss=misclass(confusion_testLoss, test)
+print(confusion_testLoss)
+print(misclass_testLoss)
+#The misclassification rates have changed since a higher punishment is given when predicting good creditscore when 
+#in fact it was bad (reasonable since bank loses money then). It is less worse to predict bad creditscore but turns
+#out to be good (just a loss of customer). Due to this more errors occur mainly because fewer people are classified
+#to have good creditscores. 
+
 
 
 
