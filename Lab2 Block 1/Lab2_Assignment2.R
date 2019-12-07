@@ -1,5 +1,7 @@
 #1: Read data and divide into train, validation and test sets
 
+library("tree")
+
 data=read.csv2("creditscoring.csv")
 n=dim(data)[1] 
 set.seed(12345) 
