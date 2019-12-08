@@ -1,6 +1,7 @@
 #1: Read data
+RNGversion('3.5.1')
 
-datatemp=read.csv2("NIRspectra.csv")
+data=read.csv2("NIRspectra.csv")
 data$Viscosity=c()
 n=dim(data)[1] 
 

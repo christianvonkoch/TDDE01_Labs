@@ -1,4 +1,5 @@
 #Read data and plot carapace length versus rear width (obs coloured by sex)
+RNGversion('3.5.1')
 Dataframe=read.csv("australian-crabs.csv")
 n = length(Dataframe[,1])
 CL = Dataframe$CL

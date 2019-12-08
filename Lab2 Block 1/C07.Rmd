@@ -1,8 +1,8 @@
 ---
 title: "Lab2"
-author: "Christian von Koch"
-date: '2019-12-07'
-output: pdf_document
+author: "Christian von Koch, Alice Velander and William Anzen"
+date: '2019-12-08'
+output: word_document
 ---
 
 ```{r setup, include=FALSE}
@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 RNGversion('3.5.1')
 ```
 
-## Assignment 1
+## Assignment 1 - Alice Velander
 
 ### Task 1
 
@@ -24,7 +24,7 @@ plot(CL, RW, main="Plot of carapace length versus rear width depending on sex",
      col=c("red", "blue")[Dataframe$sex], xlab="CL", ylab="RW")
 ```
 
-As we can see in the graph it looks like it would be suitable to classify this data using linear discriminative analysis since the pattern of both the red and blue is linear.
+As seen in the scatter plot above, we can do an linear classiﬁcation.
 
 ### Task 2
 
@@ -48,7 +48,7 @@ plot(CL, RW, main="Plot values of CL and RW depending on predicted sex",
      col=c("red", "blue")[predicted$class], xlab="CL", ylab="RW")
 ```
 
-When comparing the graph from step 1 and the graph of the predicted values it is notable that the classifications do not differ that much. With a misclassification rate of only 0.035 and 200 datapoints it can be concluded that 7 observations were classified inaccurately. When comparing the graphs it is difficult to find the points which have changed color (since they have been classified incorrectly) but one example is the point farthest to the left which was classified as _male_ but should have been classified as _female_. The model classifies the data very accurately.
+Misclassiﬁcation rate = 0.035 \newline Since we have very kind data that is easy to separate, we get a very similar plot as in step 1. We can also see that the prediction with LDA was good because of the low misclassiﬁcation rate.
 
 ### Task 3
 
@@ -65,7 +65,7 @@ plot(CL, RW, main="Predicted values of CL and RW with priors 0.9 (male) 0.1 (fem
      ylab="RW")
 ```
 
-From this graph we can see that a few more data points were classified incorrectly. This is due to the higher prior set on classifying a data point as male, i.e. 0.9. It is noteable in the confusion matrix that no males were classified incorrectly. This is also due to the high prior which basically says that it is not that likely that a datapoint will be classified as a female. When the model in fact classify a data point as female it has to be sure of it (since the low prior) and this can be seen as stated above in the confusion matrix. On the other hand, more females are classified as males inaccurately since the higher prior. This also results in a higher misclassification rate of 0.08.
+Misclassiﬁcation rate = 0.08 \newline From the plots there are more males than females for the second prediction which is explained by the new prior. The misclassiﬁcation rate is now slightly worse, making us think that the new prior does not help the prediction. This results in more females incorrectly predicted as males, and the likelihood of a male being falsely predicted as a female is low.
 
 ### Task 4
 
@@ -105,7 +105,7 @@ When using logistic regression the results are similar as the first built model 
 
 $\hat{RW}$=-($\beta_0$+$\beta_1$)/$\beta_2$*CL
 
-## Assignment 2
+## Assignment 2 - Christian von Koch
 
 ### Task 1
 
@@ -317,7 +317,7 @@ print(misclass_testLoss)
 
 From the confusion matrices and the misclassification rates it is noteable that the misclassification rates have gone up. More datapoints are being classified incorrectly. However, this is due to the defined loss matrix which describes a bigger loss when classifying a customer as _good_ when the customer in fact was _bad_. This can also be seen in the confusion matrices where there are few customers being classified as _good_ incorrectly (from 52 to 10 in train data and from 30 to 5 in test data). When the model in fact classifies a customer as _good_ it is more often correct than not. In comparison it is noteable that the model is more often wrong regarding the classification _bad_ which is due to the defined loss when misclassifying a customer as _bad_ which is less than when misclassifying a customer as _good_.
 
-## Assignment 4
+## Assignment 4 - William Anzén
 
 ### Task 1
 
@@ -352,7 +352,9 @@ plot(pcaAnalysis$x[,1],pcaAnalysis$x[,2], type="p", col="blue", main="PC1 vs PC2
 #We can see from the graph that the data is very accurately described by PC1.
 ```
 
-From the screeplot it can be concluded that two components captures almost all of the variation in the data. Therefore a PCA analysis is suitable for the data. Two components captures 99.5957 % of the variation and therefore these two components will be used in the following steps. Most of the data points is around 0 for PC1 but there are some data points which can be described as outliers located to the farthest right in the score plot. 
+The histogram above shows that only PC1 and PC2 have a significant effect on the variance. This tells us that we need to extract these PCs. 
+PC1 captures 93.3% of the variance and PC2 captures 6.2%, giving us a total over 99% of the variance captured with these 2 PCs. \newline
+We have a couple of outliers with a big variance on PC1. A couple of points around PC1= 0.5 and 2 points above PC=1. 
 
 ### Task 2
 
@@ -367,7 +369,7 @@ plot(U[,2], main="Traceplot, PC2", xlab="index", ylab="PC2", type="b")
 #close to zero for many of the features. The last 30 or so variables have an effect on PC2. 
 ```
 
-As seen in the trace plots of the loadings of PC1 and PC2, it can be concluded that for PC2 many features have PC2-values close to 0 which means that these features do not contribute to explain the PC2 axis. On the other hand no features are close to 0 in the PC1 plot which means that all features contribute to explain the PC1 axis. 
+Most of the features have an impact on PC1 as we can see in the graph to the left. While most of the features do not have an impact on PC2 as most values for the different features are around 0. There are a couple of outliers that actually affect PC2 around feature number 115-126, as well as some in the beginning with values little below 0.
 
 ### Task 3
 
@@ -399,9 +401,9 @@ plot(icaModel$S[,1], icaModel$S[,2], main="ICA1 vs ICA2", xlab="ICA1", ylab="ICA
 #Some outliers are however described by ICA1.
 ```
 
-When comparing the trace plots of ICA1 and ICA2 with PC1 and PC2 from step 2, it is noteable that for the first component the dependency on the features decreases as the index increases, whereas for the second component the dependency on the features increases as the index increases. It is also noteable that the plots for the different components appear to be each others mirrors. This is reasonable because PCA tries to maximize the variance, i.e. look for correlation between the different features, whereas ICA tries to do the exact opposite, i.e. maximizing the independence between the different features by creating an orthogonal coordinate system. The parameter W' which is computed by $\hat{W}=K*W$ describes how the features explain the principal components ICA1 and ICA2.
+Above we see the trace plots for the latent ICA components created from whitening the data by applying K (the pre-whitening matrix) onto W (our un-mixing matrix) to compute W’.  This is done to “scale” the data. Compared with the trace plots in step 2 we see that the latent ICA component are mirrors of the PCA components. This is because PCA tries to find correlation between the features by maximizing the variance to allow reconstruction. ICA works maximizing independence through transforming the feature space into a new feature space where all features are mutually independent.
 
-When comparing the last score plot with the score plot from step 1 it can also be concluded that the score plot of ICA is mirroring the score plot of PCA. However, the axis of the coordinate system of ICA have been standardized which is the difference between the plots. 
+Just like in a) we see that also this is a mirror reflection of the scores from PCA but through performing ICA the features are scaled differently.
 
 \newpage
 

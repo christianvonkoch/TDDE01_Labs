@@ -1,6 +1,7 @@
 #1: Read data and divide into train, validation and test sets
 
 library("tree")
+RNGversion('3.5.1')
 
 data=read.csv2("creditscoring.csv")
 n=dim(data)[1] 
@@ -61,6 +62,8 @@ print(optimal_leaves)
 #Optimal no of leaves is 4
 finalTree=prune.tree(fit_optimaltree, best=4)
 summary(finalTree)
+plot(finalTree)
+text(finalTree, pretty=0)
 #Final tree contains variables savings, duration and history. Since 3 vars => Depth of tree is 3.
 predicted_test=predict(finalTree, newdata=test, type="class")
 confusionmatrix_test=table(test$good_bad, predicted_test)
@@ -114,6 +117,7 @@ naiveConfusion = c()
 treeClass = c()
 naiveClass = c()
 #Reusing optimal tree found in task 3 but returntype is response instead
+set.seed(12345)
 predictTree=data.frame(predict(finalTree, newdata=test, type="vector"))
 predictNaive=data.frame(predict(fit_naive, newdata=test, type="raw"))
 for(prior in x_vector){
@@ -130,6 +134,7 @@ for(prior in x_vector){
   totBad=sum(treeConfusion[1,])
   tpr_tree=c(tpr_tree, treeConfusion[2,2]/totGood)
   fpr_tree=c(fpr_tree, treeConfusion[1,2]/totBad)
+  print(fpr_tree)
   naiveClass=class(predictNaive$good, 'good', 'bad', prior)
   naiveConfusion=table(test$good_bad, naiveClass)
   if(ncol(naiveConfusion)==1){
@@ -145,9 +150,9 @@ for(prior in x_vector){
   fpr_naive=c(fpr_naive, naiveConfusion[1,2]/totBad)
 }
 #Plot the ROC curves
-plot(fpr_naive, tpr_naive, main="ROC curve", sub="Red = Naive Bayes, Blue = Tree", type="b", col="red", xlim=c(0,1), 
-     ylim=c(0,1))
-points(fpr_tree, fpr_naive, type="b", col="blue")
+plot(fpr_naive, tpr_naive, main="ROC curve", sub="Red = Naive Bayes, Blue = Tree", type="l", col="red", xlim=c(0,1), 
+     ylim=c(0,1), xlab="FPR", ylab="TPR")
+points(fpr_tree, tpr_tree, type="l", col="blue")
 #Naive has greatest AOC => should choose Naive
 
 #6: Repeate Naive Bayes with loss matrix punishing with factor 10 if predicting good when bad and 1 if predicting
@@ -155,11 +160,11 @@ points(fpr_tree, fpr_naive, type="b", col="blue")
 naiveModel=naiveBayes(good_bad~., data=train)
 train_loss=predict(naiveModel, newdata=train, type="raw")
 test_loss=predict(naiveModel, newdata=test, type="raw")
-confusion_trainLoss=table(train$good_bad, train_loss[,2]/train_loss[,1]>10)
+confusion_trainLoss=table(train$good_bad, ifelse(train_loss[,2]/train_loss[,1]>10, "good", "bad"))
 misclass_trainLoss=misclass(confusion_trainLoss, train)
 print(confusion_trainLoss)
 print(misclass_trainLoss)
-confusion_testLoss=table(test$good_bad, test_loss[,2]/test_loss[,1]>10)
+confusion_testLoss=table(test$good_bad, ifelse(test_loss[,2]/test_loss[,1]>10, "good", "bad"))
 misclass_testLoss=misclass(confusion_testLoss, test)
 print(confusion_testLoss)
 print(misclass_testLoss)
