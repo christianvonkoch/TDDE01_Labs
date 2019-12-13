@@ -60,6 +60,3 @@ boundaryline = function(length, coefficientvector, prior) {
 par(new=TRUE)
 curve(boundaryline(x, model3$coefficients, 0.9), xlab="CL", ylab="RW", col="green", from=0, to=50, xlim=c(0,50), ylim=c(0,20),
       sub="Red = Female, Blue = Male, Green = Boundaryline")
-
-
-

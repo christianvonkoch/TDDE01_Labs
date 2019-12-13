@@ -2,7 +2,7 @@
 title: "Lab2"
 author: "Christian von Koch, Alice Velander and William Anzen"
 date: '2019-12-08'
-output: word_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
