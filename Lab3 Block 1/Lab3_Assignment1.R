@@ -31,13 +31,6 @@ temps <- read.csv("temps50k.csv")
 #A join operation on "station_number"
 st <- merge(stations,temps,by="station_number")
 n = dim(st)[1]
-#Extract relevant vectors
-lat = st$latitude
-long = st$longitude
-points = data.frame(lat,long)
-dates = as.Date(st$date)
-times = strptime(st$time, format="%H:%M:%S")
-temperature = st$air_temperature
 #Kernel weighting factors
 h_distance <- 1
 h_date <- 2
@@ -52,14 +45,26 @@ dateOI <- as.Date("2013-11-04") # The date to predict (up to the students)
 timesOI = c("04:00:00", "06:00:00", "08:00:00", "10:00:00", "12:00:00", "14:00:00", "16:00:00", "18:00:00", "20:00:00",
           "22:00:00", "24:00:00")
 
+#Remove posterior data
+filter_posterior = function(date, time, data){
+  return(data[as.numeric(difftime(strptime(paste(date, time, sep=" "), format="%Y-%m-%d %H:%M:%S"),
+                       strptime(paste(data$date, data$time, sep=" "),format="%Y-%m-%d %H:%M:%S")))>0, ])
+}
+
+data = filter_posterior("2004-05-28", "14:00:00", st)
+
 #A gaussian function for the difference in distance
 gaussian_dist = function(place, data, h) {
-  u = distHaversine(place, data)/h
+  lat = data$latitude
+  long = data$longitude
+  points = data.frame(lat,long)
+  u = distHaversine(place, points)/h
   return (exp(-u^2))
 }
 
 #A gaussian function for difference in days
-gaussian_day = function(date, compare_date, h){
+gaussian_day = function(date, data, h){
+  compare_date = as.Date(data$date)
   if (abs(as.numeric(date-compare_date))>365){
     diff = as.numeric(date-compare_date) %% 365
     if(diff>182){
@@ -73,10 +78,11 @@ gaussian_day = function(date, compare_date, h){
 }
 
 #A gaussian function for difference in hours
-gaussian_hour = function(hour, compare_hour, h){
+gaussian_hour = function(hour, data, h){
+  compare_hour = strptime(data$time, format="%H:%M:%S")
+  compare_hour = as.numeric(format(compare_hour, format="%H"))
   hour = strptime(hour, format="%H:%M:%S")
   hour = as.numeric(format(hour, format="%H"))
-  compare_hour = as.numeric(format(compare_hour, format="%H"))
   if(abs(hour-compare_hour)>12){
     diff = hour-compare_hour-12
   } else {
