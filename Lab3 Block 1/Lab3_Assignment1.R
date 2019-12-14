@@ -51,7 +51,6 @@ placeOI = c(a, b)
 dateOI <- as.Date("2013-11-04") # The date to predict (up to the students)
 timesOI = c("04:00:00", "06:00:00", "08:00:00", "10:00:00", "12:00:00", "14:00:00", "16:00:00", "18:00:00", "20:00:00",
           "22:00:00", "24:00:00")
-temp <- vector(length=length(timesOI))
 
 #A gaussian function for the difference in distance
 gaussian_dist = function(place, data, h) {
@@ -87,7 +86,7 @@ gaussian_hour = function(hour, compare_hour, h){
   return(exp(-u^2))
 }
 
-#Looping through all values and creating gaussian for distance and day
+#Defining values that will be used in loop below
 kernel_dist = c()
 kernel_day = c()
 kernel_time = c()
@@ -102,7 +101,7 @@ denominator_mult = 0
 finished = FALSE
 index = 1
 
-#Looping through time array and at the same time sums up the different kernel values
+#Looping through time array and data points in nested loop to calculate the 11 kernel values
 for (time in timesOI) {
   for (i in 1:n) {
     if (!finished) {
@@ -110,19 +109,25 @@ for (time in timesOI) {
       kernel_day = c(kernel_day, gaussian_day(dateOI, dates[i], h_date))
     }
     kernel_time = c(kernel_time, gaussian_hour(time, times[i], h_time))
-    sum_kernel = sum_kernel+kernel_dist[i]+kernel_day[i]+kernel_time[i*index]
+    sum_kernel = sum_kernel+kernel_dist[i]+kernel_day[i]+kernel_time[i]
     nominator_sum = nominator_sum+sum_kernel*temperature[i]
     denominator_sum = denominator_sum+sum_kernel
-    mult_kernel = mult_kernel+kernel_dist[i]*kernel_day[i]*kernel_time[i*index]
+    mult_kernel = mult_kernel+kernel_dist[i]*kernel_day[i]*kernel_time[i]
     nominator_mult = nominator_mult+mult_kernel*temperature[i]
     denominator_mult = denominator_mult+mult_kernel
   }
-  print("done")
   finished = TRUE;
   kernel_sum = c(kernel_sum, nominator_sum/denominator_sum)
   kernel_mult = c(kernel_mult, nominator_mult/denominator_mult)
+  kernel_time = c()
+  sum_kernel = 0
+  mult_kernel = 0
+  nominator_sum = 0
+  denominator_sum = 0
+  nominator_mult= 0
+  denominator_mult = 0
   index = index + 1
 }
 
 
-plot(temp, type="o")
+plot(kernel_sum, type="o", main = "Temperature estimate through sum of Kernels")
