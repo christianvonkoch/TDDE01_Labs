@@ -51,8 +51,6 @@ filter_posterior = function(date, time, data){
                        strptime(paste(data$date, data$time, sep=" "),format="%Y-%m-%d %H:%M:%S")))>0, ])
 }
 
-data = filter_posterior("2004-05-28", "14:00:00", st)
-
 #A gaussian function for the difference in distance
 gaussian_dist = function(place, data, h) {
   lat = data$latitude
