@@ -32,23 +32,48 @@ temps <- read.csv("temps50k.csv")
 st <- merge(stations,temps,by="station_number")
 n = dim(st)[1]
 #Kernel weighting factors
-h_distance <- 1
-h_date <- 2
-h_time <- 3
+h_distance <- 100000
+h_date <- 20
+h_time <- 2
 #Latitude of interest
-a <- 58.4274
+a <- 59.4059
 #Longitude of interest
-b <- 14.826
+b <- 18.0256
+#Coordinates for Danderyd
 #Create a vector of the point of interest
 placeOI = c(a, b)
-dateOI <- as.Date("2013-11-04") # The date to predict (up to the students)
+dateOI <- as.Date("1995-07-29") # The date to predict (up to the students), my birth date
 timesOI = c("04:00:00", "06:00:00", "08:00:00", "10:00:00", "12:00:00", "14:00:00", "16:00:00", "18:00:00", "20:00:00",
           "22:00:00", "24:00:00")
 
+plotDist = function(dist, h){
+  u = dist/h
+  plot(exp(-u^2), type="l", main="Plot of kernel wights for distances", xlab="Distance")
+}
+
+dist = seq(0,30000,1)
+plotDist(dist, h_distance)
+
+plotDate = function(date, h){
+  u = date/h
+  plot(exp(-u^2), type="l", main="Plot of kernel wights for dates", xlab="Days")
+}
+
+date = seq(0,182,1)
+plotDate(date, h_date)
+
+plotTime = function(time, h){
+  u = time/h
+  plot(exp(-u^2), type="l", main="Plot of kernel wights for time", xlab="Hours")
+}
+
+time = seq(0,12,1)
+plotTime(time, h_time)
+
 #Remove posterior data
 filter_posterior = function(date, time, data){
-  return(data[as.numeric(difftime(strptime(paste(date, time, sep=" "), format="%Y-%m-%d %H:%M:%S"),
-                       strptime(paste(data$date, data$time, sep=" "),format="%Y-%m-%d %H:%M:%S")))>0, ])
+  return(data[which(as.numeric(difftime(strptime(paste(date, time, sep=" "), format="%Y-%m-%d %H:%M:%S"),
+                       strptime(paste(data$date, data$time, sep=" "),format="%Y-%m-%d %H:%M:%S")))>0), ])
 }
 
 #A gaussian function for the difference in distance
@@ -56,20 +81,23 @@ gaussian_dist = function(place, data, h) {
   lat = data$latitude
   long = data$longitude
   points = data.frame(lat,long)
-  u = distHaversine(place, points)/h
+  u = distHaversine(points, place)/h
   return (exp(-u^2))
 }
+
+xy = gaussian_dist(placeOI, st, h_distance)
 
 #A gaussian function for difference in days
 gaussian_day = function(date, data, h){
   compare_date = as.Date(data$date)
-  if (abs(as.numeric(date-compare_date))>365){
-    diff = as.numeric(date-compare_date) %% 365
-    if(diff>182){
-      diff=diff-182
+  diff = as.numeric(date-compare_date)
+  for (i in 1:length(diff)) {
+    if (diff[i] > 365) {
+      diff[i] = diff[i] %% 365
+      if(diff[i]>182){
+        diff[i]=365-diff[i]
+      }
     }
-  } else {
-    diff = as.numeric(date-compare_date)
   }
   u = diff/h
   return (exp(-u^2))
@@ -81,57 +109,38 @@ gaussian_hour = function(hour, data, h){
   compare_hour = as.numeric(format(compare_hour, format="%H"))
   hour = strptime(hour, format="%H:%M:%S")
   hour = as.numeric(format(hour, format="%H"))
-  if(abs(hour-compare_hour)>12){
-    diff = hour-compare_hour-12
-  } else {
-    diff = hour-compare_hour
+  diff = abs(hour-compare_hour)
+  for (i in 1:length(diff)){
+    if(diff[i]>12){
+      diff[i] = 24-diff[i]
+    }
   }
   u=diff/h
   return(exp(-u^2))
 }
 
 #Defining values that will be used in loop below
-kernel_dist = c()
-kernel_day = c()
-kernel_time = c()
 kernel_sum = c()
 kernel_mult = c()
-sum_kernel = 0
-mult_kernel = 0
-nominator_sum = 0
-denominator_sum = 0
-nominator_mult = 0
-denominator_mult = 0
-finished = FALSE
-index = 1
 
 #Looping through time array and data points in nested loop to calculate the 11 kernel values
 for (time in timesOI) {
-  for (i in 1:n) {
-    if (!finished) {
-      kernel_dist = c(kernel_dist, gaussian_dist(placeOI, points[i,], h_distance))
-      kernel_day = c(kernel_day, gaussian_day(dateOI, dates[i], h_date))
-    }
-    kernel_time = c(kernel_time, gaussian_hour(time, times[i], h_time))
-    sum_kernel = sum_kernel+kernel_dist[i]+kernel_day[i]+kernel_time[i]
-    nominator_sum = nominator_sum+sum_kernel*temperature[i]
-    denominator_sum = denominator_sum+sum_kernel
-    mult_kernel = mult_kernel+kernel_dist[i]*kernel_day[i]*kernel_time[i]
-    nominator_mult = nominator_mult+mult_kernel*temperature[i]
-    denominator_mult = denominator_mult+mult_kernel
-  }
-  finished = TRUE;
-  kernel_sum = c(kernel_sum, nominator_sum/denominator_sum)
-  kernel_mult = c(kernel_mult, nominator_mult/denominator_mult)
-  kernel_time = c()
-  sum_kernel = 0
-  mult_kernel = 0
-  nominator_sum = 0
-  denominator_sum = 0
-  nominator_mult= 0
-  denominator_mult = 0
-  index = index + 1
+  filtered_data = filter_posterior(dateOI, time, st)
+  kernel_dist = gaussian_dist(placeOI, filtered_data, h_distance)
+  kernel_day = gaussian_day(dateOI, filtered_data, h_date)
+  kernel_time = gaussian_hour(time, filtered_data, h_time)
+  sum_kernel = kernel_dist+kernel_day+kernel_time
+  temp_sum = sum(sum_kernel * filtered_data$air_temperature)/sum(sum_kernel)
+  mult_kernel = kernel_dist*kernel_day*kernel_time
+  temp_mult = sum(mult_kernel * filtered_data$air_temperature)/sum(mult_kernel)
+  kernel_sum = c(kernel_sum, temp_sum)
+  kernel_mult = c(kernel_mult, temp_mult)
 }
 
 
-plot(kernel_sum, type="o", main = "Temperature estimate through sum of Kernels")
+plot(kernel_sum, type="o", main ="Temperature estimate through sum of factors", xlab="Time", 
+     ylab="Est. temperature")
+axis(1, at=1:length(timesOI), labels=timesOI)
+plot(kernel_mult, type="o", main="Temperature estimate through product of factors", xlab="Time",
+     ylab="Est. temperature")
+axis(1, at=1:length(timesOI), labels=(timesOI))
