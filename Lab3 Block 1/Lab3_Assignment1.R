@@ -48,26 +48,26 @@ timesOI = c("04:00:00", "06:00:00", "08:00:00", "10:00:00", "12:00:00", "14:00:0
 
 plotDist = function(dist, h){
   u = dist/h
-  plot(exp(-u^2), type="l", main="Plot of kernel wights for distances", xlab="Distance")
+  plot(dist, exp(-u^2), type="l", main="Plot of kernel wights for distances", xlab="Distance")
 }
 
-dist = seq(0,30000,1)
+dist = seq(0, 100000, 1)
 plotDist(dist, h_distance)
 
 plotDate = function(date, h){
   u = date/h
-  plot(exp(-u^2), type="l", main="Plot of kernel wights for dates", xlab="Days")
+  plot(date, exp(-u^2), type="l", main="Plot of kernel wights for dates", xlab="Days")
 }
 
-date = seq(0,182,1)
+date = seq(-182,182,1)
 plotDate(date, h_date)
 
 plotTime = function(time, h){
   u = time/h
-  plot(exp(-u^2), type="l", main="Plot of kernel wights for time", xlab="Hours")
+  plot(time, exp(-u^2), type="l", main="Plot of kernel wights for time", xlab="Hours")
 }
 
-time = seq(0,12,1)
+time = seq(-12,12,1)
 plotTime(time, h_time)
 
 #Remove posterior data
