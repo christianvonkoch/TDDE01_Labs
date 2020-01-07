@@ -1,4 +1,6 @@
-#Read data and plot carapace length versus rear width (obs coloured by sex)
+#1: Read data and plot carapace length versus rear width (obs coloured by sex). Do you think that this data is easy
+#to classify by LDA? Motivate answer. 
+
 RNGversion('3.5.1')
 Dataframe=read.csv("australian-crabs.csv")
 n = length(Dataframe[,1])
@@ -13,7 +15,10 @@ missclass=function(conf_matrix, fit_matrix){
   return(1-sum(diag(conf_matrix))/n)
 }
 
-#LDA analysis with target Sex, and features CL and RW and proportional prior
+#2: LDA analysis with target Sex, and features CL and RW and proportional prior by using lda() function in package MASS
+#Make a Scatter plot of CL versus RW colored by the predicted Sex and compare it with the plot in step 1. Compute the
+#misclassification error and comment on the quality of fit.
+
 library("MASS")
 model = lda(sex ~ CL+RW, data=Dataframe)
 predicted = predict(model, data=Dataframe)
@@ -24,7 +29,8 @@ print(misclass)
 plot(CL, RW, main="Plot predicted values of CL and RW depending on sex", sub="Red = Female, Blue = Male", 
      col=c("red", "blue")[predicted$class], xlab="CL", ylab="RW")
 
-#Repeat step 2 but use priors p(Male)=0.9 and p(Female)=0.1
+#3: Repeat step 2 but use priors p(Male)=0.9 and p(Female)=0.1
+
 model2 = lda(sex ~ CL+RW, data=Dataframe, prior=c(1,9)/10)
 predicted2 = predict(model2, data=Dataframe)
 confusion_matrix2 = table(Dataframe$sex, predicted2$class)
@@ -34,7 +40,9 @@ print(misclass2)
 plot(CL, RW, main="Plot predicted values of CL and RW with priors p(Male)=0.9 and p(Female)=0.1"
      , sub="Red = Female, Blue = Male", col=c("red", "blue")[predicted2$class], xlab="CL", ylab="RW")
 
-#Repeat step 2 but now with logistic regression
+#4: Repeat step 2 but now with logistic regression (use function glm()). Compare with LDA results. Finally, report the 
+#equation of the  decision boundary and draw the decision boundary in the plot of the classified data.
+
 model3 = glm(sex ~ CL+RW, data=Dataframe, family='binomial')
 predicted3 = predict(model3, newdata=Dataframe, type='response')
 sexvector = c()

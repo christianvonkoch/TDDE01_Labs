@@ -1,4 +1,4 @@
-#1: Read data and divide into train, validation and test sets
+#1: Read data and divide into train, validation and test sets as 50/25/25. 
 
 library("tree")
 RNGversion('3.5.1')
@@ -90,8 +90,8 @@ compute_naive=function(model,data){
 predictedNaive_train=compute_naive(fit_naive,train)
 predictedNaive_test=compute_naive(fit_naive, test)
 
-#5: Use optimal tree and Naives Bayes to classify the test data by using principle: classified as 1 if bigger than
-#0.05, 0.1, 0.15, ..., 0.9, 0.95. Compute the TPR and FPR for two models and plot corresponsing ROC curves.
+#5: Use optimal tree and Naives Bayes to classify the test data by using principle: classified as 1 if 'good' bigger
+#than 0.05, 0.1, 0.15, ..., 0.9, 0.95. Compute the TPR and FPR for two models and plot corresponsing ROC curves.
 
 #Writing function for classifying data
 class=function(data, class1, class2, prior){
@@ -155,8 +155,9 @@ plot(fpr_naive, tpr_naive, main="ROC curve", sub="Red = Naive Bayes, Blue = Tree
 points(fpr_tree, tpr_tree, type="l", col="blue")
 #Naive has greatest AOC => should choose Naive
 
-#6: Repeate Naive Bayes with loss matrix punishing with factor 10 if predicting good when bad and 1 if predicting
+#6: Repeat Naive Bayes with loss matrix punishing with factor 10 if predicting good when bad and 1 if predicting
 #bad when good. 
+
 naiveModel=naiveBayes(good_bad~., data=train)
 train_loss=predict(naiveModel, newdata=train, type="raw")
 test_loss=predict(naiveModel, newdata=test, type="raw")
@@ -172,8 +173,3 @@ print(misclass_testLoss)
 #in fact it was bad (reasonable since bank loses money then). It is less worse to predict bad creditscore but turns
 #out to be good (just a loss of customer). Due to this more errors occur mainly because fewer people are classified
 #to have good creditscores. 
-
-
-
-
-
