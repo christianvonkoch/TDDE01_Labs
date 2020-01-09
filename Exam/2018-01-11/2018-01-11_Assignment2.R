@@ -1,3 +1,14 @@
+##Train a neural network (NN) to learn the trigonometric sine function. To do so, sample 50 points uniformly at random
+##in the interval [0, 10]. Apply the sine function to each point. The resulting pairs are the data available to you.
+##Use 25 of the 50 points for training and the rest for validation. The validation set is used for early stop of the
+##gradient descent. Consider threshold values i/1000 with i=1,...,10. Initialize the weights of the neural network to
+##random values in the interval [-1,1]. Consider two NN architectures: A single hidden layer of 10 units, and two 
+##hidden layers with 3 units each. Choose the most appropriate NN architecture and threshold value. Motivate your 
+##choice. Feel free to reuse the code of the corresponding lab.
+##
+##Estimate the generalization error of the NN selected above (use any method of your choice).
+##In the light of the results above, would you say that the more layers the better ? Motivate your answer.
+
 RNGversion('3.5.1')
 #install.packages("neuralnet")
 library(neuralnet) 
@@ -24,6 +35,7 @@ for(i in 1:10) {
 winit2=runif(22,-1,1)
 trainScore2=rep(0,10)
 validScore2=rep(0,10)
+#R could not perform neuralnet analysis with thresholds smaller than 7/10. That is why the loop starts at 7.
 for(i in 7:10) {
   nn_temp2 <- neuralnet(Sin~Var, data=train, hidden=c(3,3), threshold=i/1000, startweights=winit2)
   nn2 = as.data.frame(nn_temp2$net.result)

@@ -51,3 +51,7 @@ print(finalmisclass)
 ##Answer: The purpose of the parameter C is to put a weight to the cost function. The higher C the more cost will a 
 ##constraint violation yield. 
 
+#Final model
+
+finalmodel=ksvm(type~., data=spam, kernel="rbfdot", kpar=list(sigma=0.05), C=1)
+
