@@ -6,7 +6,7 @@ Dataframe=Dataframe[order(Dataframe$MET),]
 MET=Dataframe$MET
 EX=Dataframe$EX
 
-plot(EX, MET, xlab="EX", ylab="MET", type="p", main="Plot of EX vs MET")
+plot(MET, EX, xlab="EX", ylab="MET", type="p", main="Plot of EX vs MET")
 
 library(tree)
 treemodel=tree(EX~MET, data=Dataframe, control=tree.control(48, mincut=8))
@@ -22,11 +22,10 @@ plot(bestTree)
 text(bestTree, pretty=0)
 title("Optimal tree")
 predData=predict(bestTree, newdata=Dataframe)
-plot(EX, MET, xlab="EX", ylab="MET", type="p", col="red", main="Plot original vs predicted data")
-points(predData, MET, col="blue")
+plot(MET, EX, xlab="EX", ylab="MET", type="p", col="red", main="Plot original vs predicted data")
+points(MET, predData, col="blue")
 summaryfit=summary(bestTree)
-residuals=(EX-predData)^2
-hist(summaryfit$residuals)
+hist(summaryfit$residuals, breaks=10)
 
 library(boot)
 # computingbootstrapsamples
@@ -39,12 +38,12 @@ f=function(data, ind){
 }
 res=boot(Dataframe, f, R=1000) #make bootstrap
 confIntNPBoot=envelope(res)
-plot(EX, MET, xlab="EX", ylab="MET", pch=21, bg="orange", main="Plot original vs predicted data")
-points(predData, MET, type="l", col="blue")
-points(confIntNPBoot$point[2,], MET, type="l")
-points(confIntNPBoot$point[1,], MET, type="l")
+plot(MET, EX, xlab="EX", ylab="MET", pch=21, bg="orange", main="Plot original vs predicted data")
+points(MET, predData, type="l", col="blue")
+points(MET, confIntNPBoot$point[2,], type="l")
+points(MET, confIntNPBoot$point[1,], type="l")
 
-mle=tree(EX~MET, data=Dataframe, control=tree.control(48, mincut=8))
+mle=prune.tree(treemodel, best=3)
 summaryMLE = summary(mle)
 rng=function(data, mle) {
   data1=data.frame(EX=data$EX, MET=data$MET)
@@ -55,16 +54,16 @@ rng=function(data, mle) {
 }
 
 f1=function(data1){
-  treemodel=tree(EX~MET, data=data1, control=tree.control(48,mincut=8)) #fit linearmodel
-  prunedtree=prune.tree(treemodel, best=3)
+  treeModel=tree(EX~MET, data=data1, control=tree.control(48,mincut=8)) #fit linearmodel
+  prunedTree=prune.tree(treeModel, best=3)
   #predictvaluesfor all EX values from the original data
-  predData=predict(prunedtree,newdata=Dataframe) 
+  predData=predict(prunedTree,newdata=Dataframe) 
   return(predData)
 }
 res=boot(Dataframe, statistic=f1, R=1000, mle=mle, ran.gen=rng, sim="parametric")
 predIntPBoot=envelope(res)
-points(predIntPBoot$point[2,], MET, type="l", col="green")
-points(predIntPBoot$point[1,], MET, type="l", col="green")
+points(MET, predIntPBoot$point[2,], type="l", col="green")
+points(MET, predIntPBoot$point[1,], type="l", col="green")
 
 
 
