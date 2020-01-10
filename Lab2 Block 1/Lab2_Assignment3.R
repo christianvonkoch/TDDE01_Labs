@@ -38,7 +38,7 @@ f=function(data, ind){
 }
 res=boot(Dataframe, f, R=1000) #make bootstrap
 confIntNPBoot=envelope(res)
-plot(MET, EX, xlab="EX", ylab="MET", pch=21, bg="orange", main="Plot original vs predicted data")
+plot(MET, EX, xlab="EX", ylab="MET", pch=21, bg="orange", main="Plot original vs predicted data", ylim=c(100,500))
 points(MET, predData, type="l", col="blue")
 points(MET, confIntNPBoot$point[2,], type="l")
 points(MET, confIntNPBoot$point[1,], type="l")
@@ -54,11 +54,13 @@ rng=function(data, mle) {
 }
 
 f1=function(data1){
-  treeModel=tree(EX~MET, data=data1, control=tree.control(48,mincut=8)) #fit linearmodel
-  prunedTree=prune.tree(treeModel, best=3)
+  treemodel=tree(EX~MET, data=data1, control=tree.control(48,mincut=8)) #fit linearmodel
+  prunedtree=prune.tree(treemodel, best=3)
+  n=length(Dataframe$EX)
   #predictvaluesfor all EX values from the original data
-  predData=predict(prunedTree,newdata=Dataframe) 
-  return(predData)
+  predData=predict(prunedtree,newdata=Dataframe) 
+  predictedEX=rnorm(n, predData, sd(summaryMLE$residuals))
+  return(predictedEX)
 }
 res=boot(Dataframe, statistic=f1, R=1000, mle=mle, ran.gen=rng, sim="parametric")
 predIntPBoot=envelope(res)
