@@ -22,8 +22,8 @@ plot(bestTree)
 text(bestTree, pretty=0)
 title("Optimal tree")
 predData=predict(bestTree, newdata=Dataframe)
-plot(EX, MET, xlab="EX", ylab="MET", type="p", col="red", main="Plot original vs predicted data")
-points(predData, MET, col="blue")
+plot(MET, EX, xlab="EX", ylab="MET", type="p", col="red", main="Plot original vs predicted data")
+points(MET, predData, col="blue")
 summaryfit=summary(bestTree)
 residuals=(EX-predData)^2
 hist(summaryfit$residuals)
@@ -39,10 +39,10 @@ f=function(data, ind){
 }
 res=boot(Dataframe, f, R=1000) #make bootstrap
 confIntNPBoot=envelope(res)
-plot(EX, MET, xlab="EX", ylab="MET", pch=21, bg="orange", main="Plot original vs predicted data")
-points(predData, MET, type="l", col="blue")
-points(confIntNPBoot$point[2,], MET, type="l")
-points(confIntNPBoot$point[1,], MET, type="l")
+plot(MET, EX, xlab="EX", ylab="MET", pch=21, bg="orange", main="Plot original vs predicted data", ylim=c(100,500))
+points(MET, predData, type="l", col="blue")
+points(MET, confIntNPBoot$point[2,], type="l")
+points(MET, confIntNPBoot$point[1,], type="l")
 
 mle=tree(EX~MET, data=Dataframe, control=tree.control(48, mincut=8))
 summaryMLE = summary(mle)
@@ -57,14 +57,16 @@ rng=function(data, mle) {
 f1=function(data1){
   treemodel=tree(EX~MET, data=data1, control=tree.control(48,mincut=8)) #fit linearmodel
   prunedtree=prune.tree(treemodel, best=3)
+  n=length(Dataframe$EX)
   #predictvaluesfor all EX values from the original data
   predData=predict(prunedtree,newdata=Dataframe) 
-  return(predData)
+  predictedEX=rnorm(n, predData, sd(summaryMLE$residuals))
+  return(predictedEX)
 }
 res=boot(Dataframe, statistic=f1, R=1000, mle=mle, ran.gen=rng, sim="parametric")
 predIntPBoot=envelope(res)
-points(predIntPBoot$point[2,], MET, type="l", col="green")
-points(predIntPBoot$point[1,], MET, type="l", col="green")
+points(MET, predIntPBoot$point[2,], type="l", col="green")
+points(MET, predIntPBoot$point[1,], type="l", col="green")
 
 
 
