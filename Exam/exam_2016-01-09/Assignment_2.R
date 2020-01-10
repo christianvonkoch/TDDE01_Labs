@@ -1,20 +1,10 @@
-###Step 1###
-library(mboost)
-bf <- read.csv2("bodyfatregression.csv")
-set.seed(1234567890)
-# gradient boosting for optimizing arbitary loss functions where regression trees are utiized as base-learners
-m <- blackboost(Bodyfat_percent~Waist_cm+Weight_kg, data=bf)
-mstop(m)
-cvf <- cv(model.weights(m), type="kfold")
-cvm <- cvrisk(m, folds=cvf, grid=1:100)
-plot(cvm)
-mstop(cvm)
+
 
 ###Step 2####
 library(kernlab)
 data(spam)
 n=dim(spam)[1]
-set.seed(1234567890)
+set.seed(12345)
 id=sample(1:n, floor(n*0.5))
 fold1=spam[id,]
 fold2=spam[-id,]
