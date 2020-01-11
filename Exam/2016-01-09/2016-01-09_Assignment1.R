@@ -27,6 +27,9 @@ text(treemodel_new, pretty=0)
 
 ##Answer: Tree structure does not change at all. 
 
+##Prune the tree fitted to the training data by using the cross-validation. Provide a cross-validation plot and comment
+##how many leaves the optimal tree should have. Which variables were selected by the optimal tree?
+
 cv.res=cv.tree(treemodel)
 plot(cv.res$size, cv.res$dev, type="b", col="red")
 plot(log(cv.res$k), cv.res$dev, type="b", col="red")
@@ -36,6 +39,13 @@ plot(optimalTree)
 text(optimalTree, pretty=0)
 
 ##Answer: Two variables were selected for the optimal tree; A9 and A10. The best no of leaves is 3. 
+
+##Use this kind of code to prepare the feature set to be used with a LASSO model (here 'train' is the training data):
+## x_train = model.matrix(~ .-1, train[,-16])
+##Fit a LASSO model to the training data, carefully consider the choice of family parameter in the glmnet function. 
+##Report the cross-validation plot, find the optimal penalty parameter value and report the number of components
+##selected by LASSO. By looking at the plot, comment whether the optimal model looks statistically significantly better
+##than the model with the smallest value of the penalty parameter.
 
 x_train = model.matrix( ~ .-1, train[,-16])
 library(glmnet)
@@ -47,6 +57,11 @@ coef(lassomodel, s="lambda.min")
 
 ##Answer: Optimal penalty parameter is 0.01036912 and the number of components used are 23. The optimal model does not
 ##look significantly better than when the smallest value is used. 
+
+##Use the following error function to compute the test error for the LASSO and tree models: 
+##E=sum(Yi*log(pi)+(1-Yi)*log(1-pi)) where Yi is the target value and pi are predicted probabilities pf Yi=1. Which 
+##model is the best according to this criterion? Why is this criterion sometimes more reasonable to use than the 
+##misclassification rate?
 
 x_test = model.matrix( ~ .-1, test[,-16])
 pred_lasso=predict(lassomodel, s=lassomodel$lambda.min, newx=x_test, type="response")
