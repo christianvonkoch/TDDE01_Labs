@@ -2,7 +2,7 @@
 title: "Lab3"
 author: "Christian von Koch"
 date: '2019-12-17'
-output: word_document
+output: pdf_document
 ---
 
 #Lab 1
