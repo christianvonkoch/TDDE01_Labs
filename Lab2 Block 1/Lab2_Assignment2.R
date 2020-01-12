@@ -38,6 +38,10 @@ print(confusionmatrix_gini)
 print(misclass_gini)
 #Deviance has best misclass score
 
+#Conclusion: It can be concluded from the misclassification rates that the split method deviance, classifies the data
+#in a better way than the split method gini. Since the method deviance performed better it will be the chosen
+#splitting method in the following steps. 
+
 #3: Use training and valid data to choose optimal tree depth. Present graphs of the dependence of deviances for 
 #training and validation data on the number of leaves. Report optimal tree, report it's depth and variables used by
 #tree. Estimate misclassification rate for the test data. 
@@ -71,6 +75,10 @@ misclass_test=misclass(confusionmatrix_test, test)
 print(confusionmatrix_test)
 print(misclass_test)
 
+#Conclusion: The tree with the lowest deviance used 4 leaves which is the optimal tree. The variables used by the tree
+#is savings, duration and history, and the depth of the tree is 3. The misclassification rate for the test data is
+#0.256. 
+
 #4: Use traning data to perform classification using Naives bayes and report the confusion matrices and 
 #misclassification rates for the traning and for the test data. Compare with results from previous steps.
 
@@ -89,6 +97,11 @@ compute_naive=function(model,data){
 }
 predictedNaive_train=compute_naive(fit_naive,train)
 predictedNaive_test=compute_naive(fit_naive, test)
+
+#Conclusion: With the naive bayes method the misclassification rate is higher than what was concluded in step 3.
+#The misclassification rate for test data for the naive bayes method is 0.316 and the misclassification rate for the
+#decision tree from step 3 is 0.256. This indicates that the decision tree method classifies the data more accurately
+#than what the model which uses the naive bayes method does. 
 
 #5: Use optimal tree and Naives Bayes to classify the test data by using principle: classified as 1 if 'good' bigger
 #than 0.05, 0.1, 0.15, ..., 0.9, 0.95. Compute the TPR and FPR for two models and plot corresponsing ROC curves.
@@ -155,6 +168,9 @@ plot(fpr_naive, tpr_naive, main="ROC curve", sub="Red = Naive Bayes, Blue = Tree
 points(fpr_tree, tpr_tree, type="l", col="blue")
 #Naive has greatest AOC => should choose Naive
 
+#Conclusion: From the ROC-curve we cam see that the total area under the curve (AOC) is the biggest for the naive
+#bayes method. Therefore this method should be the one to use instead of the decision tree model. 
+
 #6: Repeat Naive Bayes with loss matrix punishing with factor 10 if predicting good when bad and 1 if predicting
 #bad when good. 
 
@@ -169,7 +185,8 @@ confusion_testLoss=table(test$good_bad, ifelse(test_loss[,2]/test_loss[,1]>10, "
 misclass_testLoss=misclass(confusion_testLoss, test)
 print(confusion_testLoss)
 print(misclass_testLoss)
-#The misclassification rates have changed since a higher punishment is given when predicting good creditscore when 
-#in fact it was bad (reasonable since bank loses money then). It is less worse to predict bad creditscore but turns
-#out to be good (just a loss of customer). Due to this more errors occur mainly because fewer people are classified
-#to have good creditscores. 
+
+#Conclusion: The misclassification rates have changed since a higher punishment is given when predicting good 
+#creditscore when in fact it was bad (reasonable since bank loses money then). It is less worse to predict bad
+#creditscore but turns out to be good (just a loss of customer). Due to this more errors occur mainly because fewer
+#people are classified to have good creditscores. 

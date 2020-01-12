@@ -1,4 +1,12 @@
-##Support vector machines assignment
+##Use the function ksvm from the R package kernlab to learn a SVM for classifying the spam dataset that is included
+#with the package. Consider the radial basis function kernel (also known as Gaussian) with a width of 0.05. For the 
+#parameter C, consider values 0.5, 1 and 5. This implies that you have to consider three models. 
+# Perform model selection, i.e. select the most promising of the three models (use any method of your choice except
+#cross-validation or nested-cross-validation)
+# Estimate the generalization error of the SVM selected above (use any method of your choice except cross-validation
+#or nested cross validation)
+# Produce the SVM that will be returned to the user, i.e. show the code
+# What is the purpose of the parameter C?
 
 library(kernlab)
 set.seed(1234567890)
@@ -37,8 +45,8 @@ misclass3=missclass(confusion3, valid)
 print(confusion3)
 print(misclass3)
 
-##Answer: The model with the C value of 1 is the best since it has the lowest misclassification rate. However, since
-##the application is classification of spam emails, the value of C=0.5 is the best since it classified the least 
+##Conclusion: The model with the C value of 1 is the best since it has the lowest misclassification rate. However, 
+##since the application is classification of spam emails, the value of C=0.5 is the best since it classified the least 
 ##nonspam emails as spam. 
 
 finalmodel=ksvm(type~., data=spam[index[1:3501],], kernel="rbfdot", kpar=list(sigma=0.05), C=1)

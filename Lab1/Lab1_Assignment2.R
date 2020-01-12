@@ -25,6 +25,9 @@ theta_max = function(x){
 max_theta = theta_max(Dataframe)
 print(max_theta)
 
+#Conclusion: We can see from the probabilistic model that the distribution is of type exponential. The maximum
+##likelihood value of theta is: 42.29453 The optimal theta for is: 1.126217
+
 #3: Repeat step 2 but use only 6 first observations from the data, and put the two log-likelihood curves
 #(from step 2 and 3) in the same plot. What can you say about reliability of the maximum likelihood solution in
 #each case?
@@ -37,7 +40,11 @@ print(y)
 curve(-loglikelihood(x, Dataframe), xlab="Theta", from=0, to=20, add=FALSE, col="red", ylim=c(0,100))
 curve(-loglikelihood(x, y), xlab="Theta", from=0, to=20, add=TRUE, col="blue", ylim=c(0,100))
 
-#4: Assume now a Bayesian model with p(x|theta)=theta*e^(-theta*x) and a prior p(theta)=lambda*e^(-lambda*x), lambda=10.
+#Conclusion: The graph is increasing at a much slower pace when only using the first six values compared with to the
+#graph when we use all data. The model with more data is more reliable since there is a more certain min-value from
+#the graph whereas the one with only six values, the theta value could be anything from the minimum value and forward.
+
+#4: Assume now a Bayesian model with p(x|theta)=theta*e^(-theta*x) and a prior p(theta)=lambda*e^(-lambda*x), lambda=10
 #Write a function computing l(theta)=log(p(x|theta)*p(theta)). What kind of measure is actually computed by this
 #function? Plot the curve showing the dependence of l(theta) on theta computed using the entire data and overlay it
 #with a plot from step 2. Find an optimal theta and compare your result with the previous findings. 
@@ -59,8 +66,14 @@ bayesian_max_theta = bayesian_theta_max(10, Dataframe)
 print(bayesian_max_theta)
 
 #Plot new curve on top of each other
-curve(-bayesian_likelihood(x, 10, Dataframe), ylab="-Loglikelihood", xlab="Theta", from=0, to=10, add=FALSE, col="red", ylim=c(20,300))
-curve(-loglikelihood(x, Dataframe), ylab="-Loglikelihood", xlab="Theta", from=0, to=10, add=TRUE, col="blue", ylim=c(20,300))
+curve(-bayesian_likelihood(x, 10, Dataframe), ylab="-Loglikelihood", xlab="Theta", from=0, to=10, add=FALSE, col="red",
+      ylim=c(20,300))
+curve(-loglikelihood(x, Dataframe), ylab="-Loglikelihood", xlab="Theta", from=0, to=10, add=TRUE, col="blue",
+      ylim=c(20,300))
+
+#Conclusion: When using an bayesian model we have a prior that gives the model information beforehand which helps
+#fitting the model. The optimal theta is now 0.91 which is close to the datasets meanvalue, which makes sense that
+#this model gives a better predicted value.
 
 #5: Use theta value found in step 2 and generate 50 new observations from p(x|theta)=theta*e^(-theta*x) (use standard
 #number generators). Create the histograms of the original and the new data and make conclusions. 
@@ -75,4 +88,7 @@ olddata = Dataframe$Length
 print(olddata)
 hist(newdata)
 hist(olddata)
+
+#Conclusion: The histogram shows us that the distribution is fairly similar between the actual and predicted data. 
+#This concludes model was accurately fitted to the correct distribution model.
 

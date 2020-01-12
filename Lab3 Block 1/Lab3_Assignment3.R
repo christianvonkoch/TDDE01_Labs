@@ -38,8 +38,19 @@ min_error=min(validScore[1:10])
 print(min_error)
 optimal_i=which(validScore[1:10] == min_error)
 print(optimal_i)
+
+##Conclusion: As seen in the graph, naturally the train data performs the best when the threshold value is as small as
+##possible, i.e. 1/1000, and the performance decreases as this threshold increases for the train data. From the graph
+##we can see that the threshold value 4/1000 performs the best on the validation data (since it results in the lowest
+##MSE) and therefore this threshold will be used moving forward in the assignment. 
+
 optimal_nn = neuralnet(Sin~Var, data=train, hidden=10, threshold=optimal_i/1000, startweights=winit)
 plot(optimal_nn)
 # Plot of the predictions (black dots) and the data (red dots) 
 plot(prediction(optimal_nn)$rep1) 
 points(trva, col = "red")
+
+##Conclusion: The optimal neural network with threshold 4/1000 is chosen which results in the neural network shown
+##above. The last two graphs briefly show how similar the predicted values from the model are in comparison to the real
+##sinus curve. One can conclude that the neural network created resembles the shape of the sinus curve with quite a 
+##precision. 

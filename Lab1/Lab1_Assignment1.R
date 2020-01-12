@@ -37,8 +37,14 @@ print(missclass_train)
 missclass_test = missclass(confusion_matrix_test, test)
 print(missclass_test)
 
-#3: Use logistic regression to classify the test data by the classification principle: Same as above but with threshold
-#0.8. Compare the results. What effect did the new rule have. 
+#Conclusion: It is reasonable that the model performs better on the train data compared to the test data. However, the
+##fact that the miscalculations are similar indicates that the model performs similarly on two different data sets
+##which is generally how you want your model to behave. By analyzing the confusion matrices, it is notable that the
+##model is wrong more times proportionally when trying to classify an email that is spam than an email that is not
+##spam.
+
+#3: Use logistic regression to classify the test data by the classification principle: Same as above but with 
+#threshold 0.8. Compare the results. What effect did the new rule have. 
 
 #Create confusion matrix where classification is based on threshold 0.8
 confusion_matrix_train2 = table(train$Spam, predicted_values_train>0.8)
@@ -51,6 +57,11 @@ missclass_train2 = missclass(confusion_matrix_train2, test)
 print(missclass_train2)
 missclass_test2 = missclass(confusion_matrix_test2, train)
 print(missclass_test2)
+
+#Conclusion: The misclassification rates have similar results. Showing us that model is well fitted, since the model
+##acts similar between trained and tested data. Although this classificiation principle gives us a higher
+##misclassification rate, it lowered the risk of a non-spam being classified as spam substantially. Therefore we
+##prefer this principle over the previous.
 
 #4: Use standard classifier kknn() with K=30 from package kknn, report the misclassification rates for the training
 #and test data and compare the results with step 2.
@@ -71,6 +82,12 @@ print(missclass_kknn30_train)
 print(confusion_matrix_kknn30_test)
 print(missclass_kknn30_test)
 
+#Conclusion: The misclassification values between predictions of the different sets differ alot. This shows us that
+##our model is not well fitted. The misclassification is lower for the trained data, since the model is fitted after
+##these values. Compared to the results from using logistic regression to classify the data, the results from the KKNN
+##model were significally worse on the test data. This implies that KKNN classification with K=30 is worse than
+##logistic regression in this case.
+
 #5: Repeat step 4 for K=1. Classify according to kknn with k=1 for test and train data sets. What does the decrease of
 #K lead to and why?
 
@@ -85,5 +102,8 @@ print(missclass_kknn1_train)
 print(confusion_matrix_kknn1_test)
 print(missclass_kknn1_test)
 
+#Conclusion: The misclassification rate for the training confusion matrix is zero since it compares each data point
+##to itself, predicting all correct. This explains the high misclassification rate for the confusion matrix made on
+##the test data. Using K=1 is a very unreliable method because it does not imply a large statistical advantage.
 
 

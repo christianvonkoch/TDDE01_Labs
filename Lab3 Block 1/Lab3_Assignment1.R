@@ -43,7 +43,8 @@ b <- 18.0256
 #Create a vector of the point of interest
 placeOI = c(a, b)
 dateOI <- as.Date("1995-07-29") # The date to predict (up to the students), my birth date
-timesOI = c("04:00:00", "06:00:00", "08:00:00", "10:00:00", "12:00:00", "14:00:00", "16:00:00", "18:00:00", "20:00:00",
+timesOI = c("04:00:00", "06:00:00", "08:00:00", "10:00:00", "12:00:00", "14:00:00", "16:00:00", "18:00:00", 
+            "20:00:00",
           "22:00:00", "24:00:00")
 
 plotDist = function(dist, h){
@@ -144,3 +145,17 @@ axis(1, at=1:length(timesOI), labels=timesOI)
 plot(kernel_mult, type="o", main="Temperature estimate through product of factors", xlab="Time",
      ylab="Est. temperature")
 axis(1, at=1:length(timesOI), labels=(timesOI))
+
+#Conclusion: When studying the graphs above further, the h values can be motivated. Finally, the estimations for the
+#temperatures are made through the summation of different kernel functions as well as multiplication of the different
+#Kernel functions. The summation of kernel functions provides estimates closer to the mean of all temperatures (4.62)
+#than what the multiplication of kernel functions has provided. This can be due to that data points which have 
+#received a high weight through the kernel functions will have more impact in the multiplication of kernel functions
+#than with the summation of kernel functions, and similarily data points which have received a low weight through
+#the kernel functions will have more impact in the multiplication of kernel functions than with the summation of 
+#kernel functions. To conclude, the three different weights in the multiplication of kernel functions all has to be
+#quite high in order for the total weight to be high. On the other hand if one weight is low the whole weight is going
+#to be low even though the other two are high. The result of this is that the data points with high weight is more
+#significant and perhaps more similar to the point of interest and time of interest for the multiplication of kernels
+#than for the summation of kernels. This can also be seen in the graphs where the temperatures for the multiplication
+#of kernels seem more reasonable intuitively than for the summation of kernels and seem like a more accurate model.
