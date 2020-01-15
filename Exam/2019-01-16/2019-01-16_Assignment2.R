@@ -17,6 +17,7 @@ n = dim(tr)[1]
 # Random initialization of the weights in the interval [-1, 1] 
 winit <- runif(10, -1, 1)
 nn=neuralnet(Sin~Var, data=tr, hidden=3, startweights=winit)
+plot(nn)
 pred=predict(nn, newdata=te)
 plot(tr$Var, tr$Sin, xlim=c(0,9), ylim=c(-2,2), xlab="Var", ylab="Sin")
 points(te$Var, te$Sin, col="blue")

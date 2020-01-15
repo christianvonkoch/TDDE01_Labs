@@ -72,6 +72,15 @@ rng=function(data, mle) {
   return(data1)
 }
 
+f2=function(data1){
+  treemodel=tree(EX~MET, data=data1, control=tree.control(48,mincut=8)) #fit linearmodel
+  prunedtree=prune.tree(treemodel, best=3)
+  n=length(Dataframe$EX)
+  #predictvaluesfor all EX values from the original data
+  predData=predict(prunedtree,newdata=Dataframe) 
+  return(predData)
+}
+
 f1=function(data1){
   treemodel=tree(EX~MET, data=data1, control=tree.control(48,mincut=8)) #fit linearmodel
   prunedtree=prune.tree(treemodel, best=3)
@@ -81,10 +90,18 @@ f1=function(data1){
   predictedEX=rnorm(n, predData, sd(summaryMLE$residuals))
   return(predictedEX)
 }
-res=boot(Dataframe, statistic=f1, R=1000, mle=mle, ran.gen=rng, sim="parametric")
-predIntPBoot=envelope(res)
+set.seed(12345)
+resPred=boot(Dataframe, statistic=f1, R=1000, mle=mle, ran.gen=rng, sim="parametric")
+set.seed(12345)
+resConf=boot(Dataframe, statistic=f2, R=1000, mle=mle, ran.gen=rng, sim="parametric")
+predIntPBoot=envelope(resPred)
+predIntCBoot=envelope(resConf)
+plot(MET, EX, xlab="EX", ylab="MET", pch=21, bg="orange", main="Plot original vs predicted data", ylim=c(100,500))
+points(MET, predData, type="l", col="blue")
 points(MET, predIntPBoot$point[2,], type="l", col="green")
 points(MET, predIntPBoot$point[1,], type="l", col="green")
+points(MET, predIntCBoot$point[2,], type="l", col="red")
+points(MET, predIntCBoot$point[1,], type="l", col="red")
 
 #Conclusion: NOTE: This code above is wrong. The confidence bands for parametric bootstrap shold be computed separately
 #The confidence bands retrieved are more smooth. However when looking at the residuals they do not seem to be normally

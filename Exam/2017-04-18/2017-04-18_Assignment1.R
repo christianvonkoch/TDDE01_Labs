@@ -77,6 +77,7 @@ naiveModelPCA=naiveBayes(species~PC1+PC2, data=naiveData)
 predPCA=predict(naiveModelPCA, newdata=naiveData, type="class")
 confusion_naivePCA=table(Dataframe$species, predPCA)
 print(confusion_naivePCA)
+mean(predPCA != Dataframe$species)
 misclass_naivePCA=misclass(confusion_naivePCA, Dataframe)
 
 ##Answer: The classification is now 100 % correct. This is due to the fact that the two PCA components derived
