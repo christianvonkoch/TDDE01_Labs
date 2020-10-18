@@ -24,6 +24,7 @@ summary(treemodel)
 plot(treemodel)
 text(treemodel, pretty=0)
 set.seed(12345)
+# Performing cross validation on the tree model
 cvTreeModel = cv.tree(treemodel)
 plot(cvTreeModel$size, cvTreeModel$dev, type="b", col="red", xlab="Size", ylab="Dev")
 bestSize = cvTreeModel$size[which.min(cvTreeModel$dev)]

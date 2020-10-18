@@ -2,6 +2,7 @@
 #to classify by LDA? Motivate answer. 
 
 RNGversion('3.5.1')
+# Read and plot data
 Dataframe=read.csv("australian-crabs.csv")
 n = length(Dataframe[,1])
 CL = Dataframe$CL
@@ -79,6 +80,7 @@ print(misclass3)
 plot(CL, RW, main="Plot predicted values of CL and RW but with logistic regression",
      col=c("red", "blue")[sexvector_factor], xlab="CL", ylab="RW", xlim=c(0,50), ylim=c(0,20))
 
+# Funtion for calculating the boundary line for the logistic regression model
 boundaryline = function(length, coefficientvector, prior) {
   return(-coefficientvector[1]/coefficientvector[3]-(coefficientvector[2]/coefficientvector[3])*length+
            log(prior/(1-prior))/coefficientvector[3])

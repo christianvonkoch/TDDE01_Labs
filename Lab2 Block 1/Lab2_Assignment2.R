@@ -50,6 +50,7 @@ fit_optimaltree=tree(good_bad~., data=train, split="deviance")
 summary(fit_optimaltree)
 trainScore=rep(0,15)
 testScore=rep(0,15)
+# Pruning the tree and saving the deviance for both train and test data
 for(i in 2:15){
   prunedTree=prune.tree(fit_optimaltree, best=i)
   pred=predict(prunedTree, newdata=valid, type="tree")
@@ -61,6 +62,7 @@ plot(2:15, trainScore[2:15], type="b", col="red", ylim=c(200,500))
 points(2:15, testScore[2:15], type="b", col="blue")
 min_deviance=min(testScore[2:15])
 print(min_deviance)
+# Obtaining the optimal number of leaves in the tree
 optimal_leaves=which(testScore[1:15] == min_deviance)
 print(optimal_leaves)
 #Optimal no of leaves is 4
@@ -136,6 +138,7 @@ predictNaive=data.frame(predict(fit_naive, newdata=test, type="raw"))
 for(prior in x_vector){
   treeClass = class(predictTree$good, 'good', 'bad', prior)
   treeConfusion=table(test$good_bad, treeClass)
+  # Fix the matrix if no good/bad data occurs since then only one column will be present
   if(ncol(treeConfusion)==1){
     if(colnames(treeConfusion)=="good"){
       treeConfusion=cbind(c(0,0), treeConfusion)
@@ -145,11 +148,13 @@ for(prior in x_vector){
   }
   totGood=sum(treeConfusion[2,])
   totBad=sum(treeConfusion[1,])
+  # Calculating the true positives and false positives for the tree
   tpr_tree=c(tpr_tree, treeConfusion[2,2]/totGood)
   fpr_tree=c(fpr_tree, treeConfusion[1,2]/totBad)
   print(fpr_tree)
   naiveClass=class(predictNaive$good, 'good', 'bad', prior)
   naiveConfusion=table(test$good_bad, naiveClass)
+  # Fix the matrix if no good/bad data occurs since then only one column will be present
   if(ncol(naiveConfusion)==1){
     if(colnames(naiveConfusion)=="good"){
       naiveConfusion=cbind(c(0,0), naiveConfusion)

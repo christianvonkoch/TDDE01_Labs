@@ -47,14 +47,16 @@ timesOI = c("04:00:00", "06:00:00", "08:00:00", "10:00:00", "12:00:00", "14:00:0
             "20:00:00",
           "22:00:00", "24:00:00")
 
+#Function for plotting kernel weights for different distance differences
 plotDist = function(dist, h){
   u = dist/h
-  plot(dist, exp(-u^2), type="l", main="Plot of kernel wights for distances", xlab="Distance")
+  plot(dist, exp(-u^2), type="l", main="Plot of kernel weights for distances", xlab="Distance")
 }
 
 dist = seq(0, 100000, 1)
 plotDist(dist, h_distance)
 
+#Function for plotting kernel weights for different date differences
 plotDate = function(date, h){
   u = date/h
   plot(date, exp(-u^2), type="l", main="Plot of kernel wights for dates", xlab="Days")
@@ -63,6 +65,7 @@ plotDate = function(date, h){
 date = seq(-182,182,1)
 plotDate(date, h_date)
 
+#Function for plotting kernel weights for different time differences
 plotTime = function(time, h){
   u = time/h
   plot(time, exp(-u^2), type="l", main="Plot of kernel wights for time", xlab="Hours")

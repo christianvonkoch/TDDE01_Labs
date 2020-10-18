@@ -27,7 +27,7 @@ print(noOfVars)
 #Print PC1 and PC2 in plot
 plot(pcaAnalysis$x[,1],pcaAnalysis$x[,2], ylim=c(-10,10), type="p", col="blue", main="PC1 vs PC2", xlab="PC1", 
      ylab="PC2")
-#We can see from the graph that the data is very accurately described by PC1.
+# We can see from the graph that the data is very accurately described by PC1.
 
 #Conclusion: From the screeplot it can be conlcuded that the two components captures almost all of the variation in the
 #data. Therefore PCA analysis is suitable for the data. Two components capture 99.5957 % of the variation and therefore
@@ -35,7 +35,7 @@ plot(pcaAnalysis$x[,1],pcaAnalysis$x[,2], ylim=c(-10,10), type="p", col="blue", 
 #some data points which can be described as outliers located to the farthest right in the score plot. 
 
 #2: Make trace plots of the loadings of the components selected in step 1. Is there any principle component that is 
-#explaines by mainly a few original features?
+#explained by mainly a few original features?
 
 U=pcaAnalysis$rotation
 plot(U[,1], main="Traceplot, PC1", xlab="index", ylab="PC1", type="b")

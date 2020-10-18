@@ -10,6 +10,7 @@
 
 library(kernlab)
 set.seed(1234567890)
+# Read data
 data(spam)
 
 #Create function for misclassification rate
@@ -18,12 +19,13 @@ missclass=function(conf_matrix, fit_matrix){
   return(1-sum(diag(conf_matrix))/n)
 }
 
-
+# Divide into train, test and validation sets.
 index=sample(1:4601)
 train=spam[index[1:2500],]
 valid=spam[index[2501:3501],]
 test=spam[index[3502:4601],]
 
+# Exploring the three different models using three different parameters for C
 svmmodel1=ksvm(type~., data=train, kernel="rbfdot", kpar=list(sigma=0.05), C=0.5)
 pred1=predict(svmmodel1, newdata=valid)
 confusion1=table(valid$type, pred1)
